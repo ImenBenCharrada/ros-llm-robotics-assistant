@@ -1,0 +1,98 @@
+### ROS LLM Robotics Assistant ###
+
+A ROS2 system that converts natural language tasks into safe, executable robot action plans — without requiring a real robot or simulator.
+
+Robots are traditionally programmed using predefined task pipelines.
+This project explores how modern LLM tool-calling can generate structured, safe robot plans from natural language while maintaining ROS-native execution.
+
+It demonstrates how AI planning can integrate with real robotics software architecture — even without hardware.
+
+
+# Features:
+- Natural language → structured task plan (via LLM tool calling)
+- Safety validation layer
+- Intent grounding (prevents hallucinated locations)
+- ROS-native execution pipeline
+- Mocked navigation, vision, and manipulation nodes
+- End-to-end execution without hardware
+
+
+# Architecture:
+User Command
+    ↓
+LLM Planner (tool calling)
+    ↓
+Schema Validation
+    ↓
+Safety Layer
+    ↓
+ROS TaskPlan
+    ↓
+Executor
+    ↓
+Mock Robot Stack
+
+
+# Example:
+- Input:
+Bring a bottle to the user and put it on the table
+
+- Generated Plan:
+detect_object(bottle)
+grasp(bottle)
+navigate(user)
+place(table)
+
+
+# Safety Example
+- Input:
+Bring a bottle from the garage
+
+- Result:
+Blocked by safety layer (unsupported location)
+
+
+# Tech Stack:
+- ROS2 (rclpy)
+- Python
+- OpenAI Responses API (tool calling)
+- Pydantic (strict schemas)
+- Mocked robot services
+
+
+# How to Run
+colcon build
+source install/setup.bash
+
+- Run mocks:
+ros2 run llm_robotics_assistant nav_node_mock
+ros2 run llm_robotics_assistant vision_node_mock
+ros2 run llm_robotics_assistant manip_node_mock
+
+- Run executor:
+ros2 run llm_robotics_assistant dry_run_executor
+
+- Run planner:
+ros2 run llm_robotics_assistant llm_planner_node
+
+- Send a command:
+ros2 topic pub --once /nl_command std_msgs/msg/String "data: 'Bring a bottle to the user'"
+
+
+# Future Work:
+- Real robot integration
+- Replanning loop
+- TTS feedback node
+- Task memory
+
+
+# Why This Project Matters:
+Unlike simple LLM demos, this project:
+- Uses structured tool calling instead of free text
+- Applies rule-based safety validation
+- Checks plan consistency with user intent
+- Integrates fully with ROS messaging architecture
+
+
+
+
